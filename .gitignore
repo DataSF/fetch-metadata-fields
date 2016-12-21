@@ -13,7 +13,7 @@ node_modules/
 
 
 output/*
-
+configs/socrata_config.yaml
 
 # Packages #
 ############
@@ -27,6 +27,8 @@ output/*
 *.rar
 *.tar
 *.zip
+
+*.pyc
 
 # Logs and databases #
 ######################

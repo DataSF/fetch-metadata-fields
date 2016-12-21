@@ -16,4 +16,9 @@ node scripts/getAttachmentList
 npm run output_csvs
 
 
+// to update the field and attachment datasets on the portal
+
+python updateDatasets.py -c fieldConfig.yaml -d /Users/j9/Desktop/fetch-socrata-fields/configs/
+
+
 
