@@ -1,11 +1,17 @@
 var request = require('request')
 var fs = require('fs')
 
+// get  app directory
+var appDir = __dirname
+var appDirList = appDir.split('/')
+appDirList.pop(-1)
+appDir = appDirList.join('/')
+
 var page = 0
 var returnJson = []
 
 var saveOutput = function (json) {
-  fs.writeFile('../output/attachments.json', JSON.stringify(json), function (err) {
+  fs.writeFile(appDir + '/output/attachments.json', JSON.stringify(json), function (err) {
     if (err) return console.log(err)
   })
 }

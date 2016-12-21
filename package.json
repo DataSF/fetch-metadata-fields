@@ -4,7 +4,8 @@
   "description": "Scripts to create data for indexing by algolia",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "output_csvs" : "node ./scripts/processTables && node ./scripts/processGeo && node ./scripts/combineOutput && node ./scripts/getAttachmentList && node ./scripts/tocsv"
   },
   "author": "",
   "license": "MIT",
