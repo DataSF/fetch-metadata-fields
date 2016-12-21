@@ -1,17 +1,23 @@
 var json2csv = require('json2csv')
 var fs = require('fs')
 
-var file = 'combined'
+var jsonfiles = ['combined', 'attachments']
+var appDir = __dirname
+var appDirList = appDir.split('/')
+appDirList.pop(-1)
+appDir = appDirList.join('/')
 
-fs.readFile('../output/' + file + '.json', function (err, data) {
-	if (err) throw err
+jsonfiles.forEach(function (file) {
+  fs.readFile(appDir + '/output/' + file + '.json', function (err, data) {
+    if (err) throw err
 
-	data = JSON.parse(data)
+    data = JSON.parse(data)
 
-	var csv = json2csv({data: data})
+    var csv = json2csv({data: data})
 
-	fs.writeFile('../output/' + file + '.csv', csv, function (err){
-		if (err) throw err
-		console.log('file saved')
-	})
+    fs.writeFile(appDir + '/output/' + file + '.csv', csv, function (err) {
+      if (err) throw err
+      console.log('file saved')
+    })
+  })
 })

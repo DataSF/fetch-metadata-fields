@@ -1,7 +1,13 @@
+
 var request = require('request')
 var fs = require('fs')
 
-fs.readFile('../output/tables.json', function (err, data) {
+var appDir = __dirname
+var appDirList = appDir.split('/')
+appDirList.pop(-1)
+appDir = appDirList.join('/')
+
+fs.readFile(appDir + '/output/tables.json', function (err, data) {
   if (err) {
     console.log(err)
   }
@@ -24,7 +30,7 @@ fs.readFile('../output/tables.json', function (err, data) {
         console.log(err)
       }
       var result = JSON.parse(body)
-      console.log('https://data.sfgov.org/api/views/' + row.childView + '.json')
+      // /console.log('https://data.sfgov.org/api/views/' + row.childView + '.json')
       var columns = result.columns.map(function (column, index, arr) {
         return {
           'data_type': 'geo',
@@ -45,7 +51,6 @@ fs.readFile('../output/tables.json', function (err, data) {
         }
       })
       geoFields = geoFields.concat(columns)
-      console.log(geoFields)
 
       if (iter === count) {
         cb(geoFields)
@@ -60,7 +65,7 @@ fs.readFile('../output/tables.json', function (err, data) {
       return prev.concat(curr)
     }, [])
 
-    fs.writeFile('../output/geo.json', JSON.stringify(output), function (err) {
+    fs.writeFile(appDir + '/output/geo.json', JSON.stringify(output), function (err) {
       if (err) return console.log(err)
     })
   }

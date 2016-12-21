@@ -6,7 +6,6 @@ var limitSize = limitArray.length
 var results = []
 
 for (var i = 0; i < limitSize; i++) {
-  console.log(i)
   request({
     url: 'https://data.sfgov.org/api/search/views.json',
     qs: {limit: 1000, limitTo: limitArray[i]}

@@ -1,5 +1,10 @@
 var request = require('request')
 var fs = require('fs')
+// get app dir
+var appDir = __dirname
+var appDirList = appDir.split('/')
+appDirList.pop(-1)
+appDir = appDirList.join('/')
 
 request({
   url: 'https://data.sfgov.org/api/search/views.json',
@@ -59,10 +64,10 @@ request({
           return ret
         }
       }).reduce(function (prev, curr) {
-      return prev.concat(curr)
-    })
+        return prev.concat(curr)
+      })
 
-    fs.writeFile('../output/tables.json', JSON.stringify(results), function (err) {
+    fs.writeFile(appDir + '/output/tables.json', JSON.stringify(results), function (err) {
       if (err) return console.log(err)
     })
   }
