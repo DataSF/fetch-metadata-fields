@@ -8,5 +8,12 @@ node scripts/tocsv
 
 // To get attachments
 
-node scripts/getAttachmentList.js
+node scripts/getAttachmentList
+
+
+// Or to run everything and get resulting csvs
+
+npm run output_csvs
+
+
 
