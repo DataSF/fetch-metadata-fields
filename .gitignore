@@ -27,8 +27,9 @@ configs/socrata_config.yaml
 *.rar
 *.tar
 *.zip
-
+*.ipynb_
 *.pyc
+
 
 # Logs and databases #
 ######################

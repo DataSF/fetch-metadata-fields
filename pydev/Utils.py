@@ -41,6 +41,15 @@ class PandasUtils:
   def convertDfToDictrows(df):
     return df.to_dict(orient='records')
 
+  @staticmethod
+  def mapFieldNames(df, field_mapping_dict):
+    return df.rename(columns=field_mapping_dict)
+
+  @staticmethod
+  def groupbyCountStar(df, group_by_list):
+    return df.groupby(group_by_list).size().reset_index(name='count')
+
+
 if __name__ == "__main__":
     main()
 

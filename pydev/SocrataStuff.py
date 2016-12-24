@@ -119,8 +119,12 @@ class SocrataCRUD:
         else:
             dataset[self.isLoaded] = 'failed'
         if dataset[self.isLoaded] == 'failed':
+            diff = float(dataset[self.rowsInserted])/float(dataset[self.src_records_cnt_field])
             dataset[self.rowsInserted] = self.getRowCnt(dataset)
             if dataset[self.rowsInserted] == dataset[self.src_records_cnt_field]:
+                dataset[self.isLoaded] = 'success'
+            #3% difference in the dataset
+            elif diff < 0.03:
                 dataset[self.isLoaded] = 'success'
         if dataset[self.isLoaded] == 'success':
             print "data insert success!" + " Loaded " + str(dataset[self.rowsInserted]) + "rows!"
@@ -136,7 +140,7 @@ class SocrataCRUD:
         return int(cnt[0]['count'])
 
 class SocrataLoadUtils:
-    def __init__(self, configItems):
+    def __init__(self, configItems, clientItems=None):
         self.datasets_to_load_fn = configItems['datasets_to_load_fn']
         self.dataset_name_field = configItems['dataset_name_field']
         self.dataset_src_dir_field = configItems['dataset_src_dir_field']
@@ -148,6 +152,7 @@ class SocrataLoadUtils:
 
     def make_datasets(self):
         datasets = PandasUtils.loadCsv(self.inputConfigDir+self.datasets_to_load_fn)
+        datasets = datasets.fillna('')
         datasets = PandasUtils.convertDfToDictrows(datasets)
         for dataset in datasets:
             dataset = self.setDatasetDicts(dataset)
@@ -156,16 +161,56 @@ class SocrataLoadUtils:
     def setDatasetDicts(self, dataset):
         dataset[ self.rowsInserted] = 0
         dataset[self.src_records_cnt_field] = 0
-        print dataset[self.row_id]
-        if dataset[self.row_id] == 'None':
-            dataset[self.row_id] = ''
         return dataset
 
     def makeInsertDataSet(self, dataset):
         insertDataSet = PandasUtils.loadCsv(dataset[self.dataset_src_dir_field]+ dataset[self.dataset_src_fn_field])
+        insertDataSet = insertDataSet.fillna('')
         insertDataSet = PandasUtils.convertDfToDictrows(insertDataSet)
         dataset[self.src_records_cnt_field] = len(insertDataSet)
         return insertDataSet, dataset
+
+class SocrataQueries:
+    def __init__(self, clientItems, configItems):
+        self.base_url = configItems['base_url']
+        self.full_url = "https://"+ configItems['base_url'] +"/resource/"
+        self.username = clientItems['username']
+        self.passwd =  clientItems['password']
+
+    def getRowCnt(self, fourXFour):
+        time.sleep(1)
+        qry = '?$select=count(*)'
+        qry = self.full_url +fourXFour+ ".json" + qry
+        r = requests.get( qry , auth=( self.username, base64.b64decode(self.passwd)))
+        cnt =  r.json()
+        return int(cnt[0]['count'])
+
+    def getQry(self, fourXFour, qry):
+         qry = self.full_url +fourXFour+ ".json" + qry
+         r = requests.get( qry , auth=( self.username, base64.b64decode(self.passwd)))
+         return r.json()
+
+    def pageThroughResultsSelect(self, fbf, qry_cols):
+        row_cnt = self.getRowCnt(fbf)
+        returned_records = 0
+        offset = 0
+        all_results = []
+        while returned_records < row_cnt:
+            limit_offset = "&$limit=1000&$offset="+ str(offset)
+            qry = '?$select='+qry_cols+ limit_offset
+            try:
+                results = self.getQry(fbf, qry)
+            except Exception, e:
+                print str(e)
+            try:
+                all_results =  all_results + results
+            except Exception, e:
+                print results
+                print str(e)
+                break
+            offset = offset + 1000
+            returned_records = len(results)+ returned_records
+        return all_results
 
 if __name__ == "__main__":
     main()

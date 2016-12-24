@@ -16,6 +16,14 @@ var saveOutput = function (json) {
   })
 }
 
+function isDataDict (attachmentName) {
+  var dataDictRegex = new RegExp('datadict', 'i')
+  if (dataDictRegex.test(attachmentName)) {
+    return true
+  }
+  return false
+}
+
 var getData = function () {
   page += 1
 
@@ -28,7 +36,7 @@ var getData = function () {
     }
     var resp = JSON.parse(body)
     if (resp.results) {
-      console.log(resp.results.length)
+      // /console.log(resp.results.length)
       for (var result of resp.results) {
         var view = result.view
         if (view.metadata && view.metadata.attachments && view.metadata.attachments.length > 0) {
@@ -41,13 +49,12 @@ var getData = function () {
               'attachment_name': filename,
               'attachment_url': 'https://data.sfgov.org/api/views/' + view.id + '/files/' + attId + '?download=true&filename=' + att.name,
               'name': view.name,
-              'url': 'https://data.sfgov.org/d/' + view.id
+              'url': 'https://data.sfgov.org/d/' + view.id,
+              'data_dictionary_attached': isDataDict(filename)
             })
-            console.log(returnJson)
           }
         }
       }
-      console.log(returnJson)
       getData()
     } else {
       saveOutput(returnJson)

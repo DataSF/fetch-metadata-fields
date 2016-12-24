@@ -8,13 +8,6 @@ from SocrataStuff import *
 from Utils import *
 from UpdateSocrataFields import *
 
-helpmsgUpdateSchedule = 'Use the -d option for updating the data dictionary attachment dataset'
-parser = OptionParser(usage='usage: %prog [options] ')
-parser.add_option('-a', '--attachmentsForDataDict',
-                      action='store',
-                      dest='updt_attachments_dataset',
-                      default=None,
-                      help=helpmsgUpdateSchedule ,)
 
 helpmsgConfigFile = 'Use the -c to add a config yaml file. EX: fieldConfig.yaml'
 parser.add_option('-c', '--configfile',
@@ -41,10 +34,8 @@ elif options.configDir is None:
     print helpmsgConfigDir
     exit(1)
 
-updt_attachments_dataset = options.updt_attachments_dataset
 fieldConfigFile = options.configFn
 config_inputdir = options.configDir
-
 
 cI =  ConfigItems(config_inputdir ,fieldConfigFile  )
 configItems = cI.getConfigs()
@@ -56,8 +47,16 @@ logger = lg.setConfig()
 socrataLoadUtils = SocrataLoadUtils(configItems)
 scrud = SocrataCRUD(client, clientItems, configItems, logger)
 sqry = SocrataQueries(clientItems, configItems)
-datasets = socrataLoadUtils.make_datasets()
-for dataset in datasets:
-  insertDataSet, dataset = socrataLoadUtils.makeInsertDataSet(dataset)
-  dataset = scrud.postDataToSocrata(dataset, insertDataSet )
-  print dataset
+
+
+tables = configItems['tables']
+dataset_inventory = tables['dataset_inventory']
+dataset_inventory_cols = tables['dataset_inventory']['field_list']
+dataset_inventory_cols_qry = ",".join(dataset_inventory_cols)
+print dataset_inventory_cols_qry
+rowCount = sqry.getRowCnt(dataset_inventory['fbf'])
+qry = '?$select='+dataset_inventory_cols_qry
+
+results = sqry.getQry(dataset_inventory['fbf'], qry)
+print results
+print rowCount
