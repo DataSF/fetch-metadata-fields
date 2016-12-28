@@ -1,4 +1,6 @@
-
+# coding: utf-8
+#!/usr/bin/env python
+#
 from __future__ import division
 import shutil
 import inflection
@@ -41,7 +43,7 @@ class SocrataClient:
                 client = Socrata(client_items['url'],  client_items['app_token'], username=client_items['username'], password=base64.b64decode(client_items['password']))
                 return client
             except yaml.YAMLError as exc:
-                print(exc)
+                logger.error('Failed to open yaml file', exc_info=True)
         return 0
 
     def connectToSocrataConfigItems(self):
@@ -52,6 +54,7 @@ class SocrataClient:
                 return clientItems
             except yaml.YAMLError as exc:
                 print(exc)
+                logger.error('Failed to open yaml file', exc_info=True)
         return 0
 
 
@@ -74,13 +77,17 @@ class SocrataCRUD:
         insertChunks = self.makeChunks(insertDataSet)
         #overwrite the dataset on the first insert chunk[0] if there is no row id
         if dataset[self.rowsInserted] == 0 and dataset[self.row_id ] == '':
-            print "replacing and inserting"
+            msg =  "replacing and inserting " + dataset[self.name]
+            print msg
+            logger.info(msg)
             rejectedChunk = self.replaceDataSet(dataset, insertChunks[0])
             if len(insertChunks) > 1:
                 for chunk in insertChunks[1:]:
                     rejectedChunk = self.insertData(dataset, chunk)
         else:
-            print "upserting..."
+            msg =  "upserting... " + dataset[self.name]
+            print msg
+            logger.info(msg)
 
             for chunk in insertChunks:
                 rejectedChunk = self.insertData(dataset, chunk)
@@ -110,7 +117,9 @@ class SocrataCRUD:
             dataset = self.insertGeodataSet(dataset, insertDataSet)
             dataset = self.checkCompleted(dataset)
         else:
-            print "dataset does not exist"
+            msg =  dataset[self.name] + "  does not exist"
+            print msg
+            logger.info(msg)
         return dataset
 
     def checkCompleted(self, dataset):
@@ -127,7 +136,9 @@ class SocrataCRUD:
             elif diff < 0.03:
                 dataset[self.isLoaded] = 'success'
         if dataset[self.isLoaded] == 'success':
-            print "data insert success!" + " Loaded " + str(dataset[self.rowsInserted]) + "rows!"
+            msg =  "data insert success for " + dataset[self.name] + " !"  + " Loaded " + str(dataset[self.rowsInserted]) + "rows!"
+            print msg
+            logger.info(msg)
         return dataset
 
     def getRowCnt(self, dataset):
@@ -136,7 +147,6 @@ class SocrataCRUD:
         qry = "https://"+ self.clientItems['url']+"/resource/" +dataset[self.fourXFour]+ ".json" + qry
         r = requests.get( qry , auth=( self.clientItems['username'],  base64.b64decode(self.clientItems['password'])))
         cnt =  r.json()
-        print cnt
         return int(cnt[0]['count'])
 
 class SocrataLoadUtils:
@@ -202,10 +212,13 @@ class SocrataQueries:
                 results = self.getQry(fbf, qry)
             except Exception, e:
                 print str(e)
+                logger.info(str(e))
             try:
                 all_results =  all_results + results
             except Exception, e:
                 print results
+                logger.info(results)
+                logger.info(str(e))
                 print str(e)
                 break
             offset = offset + 1000

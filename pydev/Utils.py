@@ -2,8 +2,19 @@
 #!/usr/bin/env python
 
 #util classes
-import pandas as pd
 import logging
+import csv
+import time
+import datetime
+import logging
+import os
+import csv, codecs, cStringIO
+import math
+from io import BytesIO
+import shutil
+from csv import DictWriter
+from cStringIO import StringIO
+
 
 class pyLogger:
     def __init__(self, configItems):
@@ -17,37 +28,46 @@ class pyLogger:
         fo.close
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         logger = logging.getLogger("thisApp")
-        logger.setLevel(logging.WARN)
+        logger.setLevel(logging.INFO)
         # create the logging file handler
-        fh = logging.FileHandler("self.logfile_fullpath")
+        fh = logging.FileHandler(self.logfile_fullpath)
         #formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
         # add handler to logger object
         logger.addHandler(fh)
         return logger
 
+class UnicodeWriter:
+    """
+    A CSV writer which will write rows to CSV file "f",
+    which is encoded in the given encoding.
+    """
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+        # Redirect output to a queue
+        self.queue = cStringIO.StringIO()
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+        self.stream = f
+        self.encoder = codecs.getincrementalencoder(encoding)()
 
-class PandasUtils:
-  @staticmethod
-  def loadCsv(fullpath):
-    df = None
-    try:
-      df = pd.read_csv(fullpath)
-    except Exception, e:
-      print str(e)
-    return df
+    def writerow(self, row):
+        self.writer.writerow([s.encode("utf-8") for s in row])
+        # Fetch UTF-8 output from the queue ...
+        data = self.queue.getvalue()
+        data = data.decode("utf-8")
+        # ... and reencode it into the target encoding
+        data = self.encoder.encode(data)
+        # write to the target stream
+        self.stream.write(data)
+        # empty queue
+        self.queue.truncate(0)
 
-  @staticmethod
-  def convertDfToDictrows(df):
-    return df.to_dict(orient='records')
+    def writerows(self, rows):
+        for row in rows:
+            self.writerow(row)
 
-  @staticmethod
-  def mapFieldNames(df, field_mapping_dict):
-    return df.rename(columns=field_mapping_dict)
 
-  @staticmethod
-  def groupbyCountStar(df, group_by_list):
-    return df.groupby(group_by_list).size().reset_index(name='count')
+
+
 
 
 if __name__ == "__main__":

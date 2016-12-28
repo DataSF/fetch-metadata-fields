@@ -19,5 +19,15 @@ class ConfigItems:
                 print(exc)
         return configItems
 
+    @staticmethod
+    def getConfigsStatic(inputdir, fieldConfigFile):
+        configItems = 0
+        with open(inputdir + fieldConfigFile ,  'r') as stream:
+            try:
+                configItems = yaml.load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+        return configItems
+
 if __name__ == "__main__":
     main()
