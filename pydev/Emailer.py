@@ -35,10 +35,10 @@ class Emailer():
         self._password = None
         self._bcc = None
         self.setConfigs()
-        self._recipients = Emailer.getReceipients(self._emailConfigs)
+        self._recipients = self.getRecipients(self._emailConfigs)
 
     @staticmethod
-    def getReceipients(emailConfigs):
+    def getRecipients(emailConfigs):
         if 'recipients'in emailConfigs.keys():
             return emailConfigs['recipients']
         return None
@@ -69,7 +69,6 @@ class Emailer():
         #Optional Email Attachment:
         if(not(fname_attachment is None and fname_attachment_fullpath is None)):
             filename = fname_attachment
-            print fname_attachment_fullpath
             attachment = open(fname_attachment_fullpath, "rb")
             part = MIMEBase('application', 'octet-stream')
             part.set_payload((attachment).read())

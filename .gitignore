@@ -11,7 +11,7 @@ node_modules/
 *.o
 *.so
 
-
+logs/*
 output/*
 configs/socrata_config.yaml
 configs/email_config.yaml

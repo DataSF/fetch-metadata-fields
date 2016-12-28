@@ -7,6 +7,8 @@ from pandas.io.json import json_normalize
 from PandasUtils import *
 from DictUtils import *
 
+
+
 class BuildDatasets:
     '''class to build up the base of the master dataset'''
     @staticmethod
@@ -53,7 +55,6 @@ class MasterDataDictionary:
         asset_inventory = asset_inventory[asset_inventory['type']== 'dataset']
         #asset_inventory-> remove all the geo fields
         asset_fields = asset_fields[asset_fields['data_type'] ==  'tabular']
-        print len(asset_fields)
         #filter out records that don't have data_dictionaries + remove dupes
         data_dictionary_attachments = data_dictionary_attachments[data_dictionary_attachments['data_dictionary_attached'] ==  True]
         data_dictionary_attachments = data_dictionary_attachments.drop_duplicates('datasetid')
@@ -75,7 +76,6 @@ class MasterDataDictionary:
         dataset_inventory =  MasterDataDictionary.buildInventoryInfo(dataset_inventory,coordinators)
         #join everything together to make the master dataset
         master_df = pd.merge(asset_fields, asset_inventory, on='datasetid', how='left').merge(data_dictionary_attachments, on='datasetid', how='left').merge(dataset_inventory, on='datasetid', how='left')
-        print len(master_df)
         master_df = master_df.fillna('')
         master_df = master_df[fields_to_include ]
         return master_df

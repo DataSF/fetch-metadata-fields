@@ -2,7 +2,7 @@ inputDataDir: /Users/j9/Desktop/fetch-socrata-fields/output/
 inputConfigDir: /Users/j9/Desktop/fetch-socrata-fields/configs/
 socrata_client_config_fname: socrata_config.yaml
 log_dir: /Users/j9/Desktop/fetch-socrata-fields/logs/
-exception_logfile: exception.log
+exception_logfile: metadata_fields_exception.log
 src_records_cnt_field: SrcRecordsCnt
 dataset_records_cnt_field: DatasetRecordsCnt
 fourXFour: fourXFour
@@ -13,3 +13,6 @@ dataset_name_field: Socrata Dataset Name
 dataset_src_dir_field:  Dataset_Source_Dir
 dataset_src_fn_field: Dataset Source Filename
 base_url: data.sfgov.org
+app_name: metadata_fields
+job_name: Update Metadata Fields
+email_config_file: email_config.yaml
