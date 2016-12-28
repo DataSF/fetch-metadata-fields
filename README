@@ -18,7 +18,13 @@ npm run output_csvs
 
 // to update the field and attachment datasets on the portal
 
-python updateDatasets.py -c fieldConfig.yaml -d /Users/j9/Desktop/fetch-socrata-fields/configs/
+python pydev/update_metadata_fields.py -c fieldConfig.yaml -d /Users/j9/Desktop/fetch-socrata-fields/configs/
+
+// update the master data dictionary dataset
+
+python pydev/update_master_data_dictionary.py -c fieldConfigMasterDD.yaml -d /Users/j9/Desktop/fetch-socrata-fields/configs/
 
 
+// to run the total job
 
+./fetch_metadata_fields.sh
