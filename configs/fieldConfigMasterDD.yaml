@@ -48,7 +48,8 @@ tables:
     field_list: ['department_string', 'department_transform']
 
 master_data_dictionary:
-    fourXFour: 8zp7-ik63
+    #fourXFour: 8zp7-ik63
+    fourXFour: asfx-iyhm
     Socrata Dataset Name: Master Data Dictionary
     row_id: columnid
 

@@ -10,6 +10,7 @@ from UpdateSocrataFields import *
 from PandasUtils import *
 from MasterDataset import *
 from JobStatusEmailerComposer import *
+from PyLogger import *
 
 def parse_opts():
   helpmsgConfigFile = 'Use the -c to add a config yaml file. EX: fieldConfig.yaml'

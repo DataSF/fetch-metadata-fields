@@ -8,7 +8,7 @@ from SocrataStuff import *
 from Utils import *
 from UpdateSocrataFields import *
 from JobStatusEmailerComposer import *
-
+from PyLogger import *
 
 def parse_opts():
   helpmsgConfigFile = 'Use the -c to add a config yaml file. EX: fieldConfig.yaml'
