@@ -51,7 +51,8 @@ request({
         if (result.view.viewType === 'tabular') {
           var columns = result.view.columns.map(function (column, index, arr) {
             var col = {
-              'columnID': result.view.id + '_' + column.name.toLowerCase().replace(/ /g, '_'),
+              // 'columnID': result.view.id + '_' + column.name.toLowerCase().replace(/ /g, '_'),
+              'columnID': result.view.id + '_' + column.fieldName,
               'internalColumnID': column.id,
               'systemID': result.view.id,
               'data_type': result.view.viewType,
