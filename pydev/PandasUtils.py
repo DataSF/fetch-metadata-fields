@@ -36,6 +36,10 @@ class PandasUtils:
   def groupbyCountStar(df, group_by_list):
     return df.groupby(group_by_list).size().reset_index(name='count')
 
+  @staticmethod
+  def makeLookupDictOnTwo(df, key_col, val_col):
+      return dict(zip(df[key_col], df[val_col]))
+
 
 
 if __name__ == "__main__":

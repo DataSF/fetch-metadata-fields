@@ -10,7 +10,7 @@ dataset_records_cnt_field: DatasetRecordsCnt
 fourXFour: fourXFour
 row_id_field: row_id
 isLoaded: isLoaded
-datasets_to_load_fn: datasets_to_load.csv
+datasets_to_load_fn: datasets_to_load_desktop.csv
 dataset_name_field: Socrata Dataset Name
 dataset_src_dir_field:  Dataset_Source_Dir
 dataset_src_fn_field: Dataset Source Filename
@@ -19,7 +19,7 @@ email_config_file: email_config.yaml
 tables:
   global_fields:
     fbf: ctmu-r9d9
-    field_list: ['global_string']
+    field_list: ['global_string', 'field_name']
   dataset_inventory:
     fbf: y8fp-fbf5
     field_list: ['inventory_id', 'department_or_division', 'dataset_id']
@@ -46,10 +46,13 @@ tables:
   department_lookup:
     fbf: n66m-42dh
     field_list: ['department_string', 'department_transform']
+  global_field_defs:
+    fbf: iwpj-u2p9
+    field_list: ['global_field_name', 'global_field_definition']
 
 master_data_dictionary:
-    #fourXFour: 8zp7-ik63
-    fourXFour: asfx-iyhm
+    fourXFour: 8zp7-ik63
+    #fourXFour: asfx-iyhm
     Socrata Dataset Name: Master Data Dictionary
     row_id: columnid
 

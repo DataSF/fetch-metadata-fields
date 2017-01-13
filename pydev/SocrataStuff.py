@@ -169,6 +169,7 @@ class SocrataLoadUtils:
 
     def make_datasets(self):
         datasets = PandasUtils.loadCsv(self.inputConfigDir+self.datasets_to_load_fn)
+        #print self.inputConfigDir+self.datasets_to_load_fn
         datasets = datasets.fillna('')
         datasets = PandasUtils.convertDfToDictrows(datasets)
         for dataset in datasets:

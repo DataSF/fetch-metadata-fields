@@ -6,7 +6,6 @@ from optparse import OptionParser
 from ConfigUtils import *
 from SocrataStuff import *
 from Utils import *
-from UpdateSocrataFields import *
 from JobStatusEmailerComposer import *
 from PyLogger import *
 

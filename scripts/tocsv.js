@@ -12,7 +12,6 @@ jsonfiles.forEach(function (file) {
     if (err) throw err
 
     data = JSON.parse(data)
-
     var csv = json2csv({data: data})
 
     fs.writeFile(appDir + '/output/' + file + '.csv', csv, function (err) {

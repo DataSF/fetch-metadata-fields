@@ -33,6 +33,7 @@ class BuildDatasets:
             qryCols = BuildDatasets.getQryCols(tables, dataset)
             results_json = socrataQueriesObject.pageThroughResultsSelect(fbf, qryCols)
             df = BuildDatasets.makeDf(results_json)
+            #print list(df.columns)
             #rename the fields
             if 'field_mapping' in tables[dataset].keys():
                 df = PandasUtils.mapFieldNames(df, tables[dataset]['field_mapping'])
@@ -51,10 +52,11 @@ class MasterDataDictionary:
         data_dictionary_attachments = dfs_dict['data_dictionary_attachments']
         dataset_inventory = dfs_dict['dataset_inventory']
         coordinators = dfs_dict['cordinators']
-        #asset_inventory-> we only want rows that are datsets
-        asset_inventory = asset_inventory[asset_inventory['type']== 'dataset']
+        ##asset_inventory-> we only want rows that are datsets
+        asset_inventory = asset_inventory[ asset_inventory['type']== 'dataset']
         #asset_inventory-> remove all the geo fields
-        asset_fields = asset_fields[asset_fields['data_type'] ==  'tabular']
+        asset_fields = asset_fields[ (asset_fields['data_type'] ==  'tabular') | (asset_fields['data_type'] ==  'geo') ]
+
         #filter out records that don't have data_dictionaries + remove dupes
         data_dictionary_attachments = data_dictionary_attachments[data_dictionary_attachments['data_dictionary_attached'] ==  True]
         data_dictionary_attachments = data_dictionary_attachments.drop_duplicates('datasetid')
@@ -117,16 +119,33 @@ class MasterDataDictionary:
         return master_df
 
     @staticmethod
-    def calc_global_field(master_df, dfs_dicts):
+    def calc_global_field(master_df, dfs_dict):
         '''flags whether a field is a global field:
-            if field_name in global_fields list, then true'''
+            if field_name in global_fields list, then true
+            also sets the field alias for global fields'''
         def calc_global_field_row(row, global_field_list):
             if row['field_name'] in global_field_list:
                 return True
             return False
-        df_global = dfs_dicts['global_fields']
+
+        def calc_global_field_alias(row, global_field_dict,global_field_list ):
+            if row['field_name'] in global_field_list:
+                return global_field_dict[row['field_name']]
+            return ""
+
+        def calc_global_field_def(row, global_def_dict, global_field_list):
+            if row['field_alias'] != '' and row['field_name'] in global_field_list:
+                return global_def_dict[row['field_alias']]
+
+        df_global = dfs_dict['global_fields']
+        df_global_defs = dfs_dict['global_field_defs']
+        global_field_dict = PandasUtils.makeLookupDictOnTwo(df_global, 'global_string', 'field_name')
+        global_def_dict = PandasUtils.makeLookupDictOnTwo(df_global_defs, 'global_field_name', 'global_field_definition')
+
         global_field_list = list(set( list( df_global['global_string'])))
         master_df['global_field'] = master_df.apply(lambda row: calc_global_field_row(row, global_field_list),axis=1)
+        master_df['field_alias'] = master_df.apply(lambda row: calc_global_field_alias(row, global_field_dict, global_field_list),axis=1)
+        master_df['global_field_definition'] =  master_df.apply(lambda row: calc_global_field_def(row, global_def_dict, global_field_list ),axis=1)
         return master_df
 
     @staticmethod

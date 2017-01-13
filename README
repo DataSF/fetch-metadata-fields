@@ -28,3 +28,10 @@ python pydev/update_master_data_dictionary.py -c fieldConfigMasterDD.yaml -d /Us
 // to run the total job
 
 ./fetch_metadata_fields.sh
+
+
+// Additional Installation notes
+
+// You will need node and npm installed --> we used node v.6
+// run the install script, setup_dirs to set up the dirctory structure:
+`setup_dirs.sh`

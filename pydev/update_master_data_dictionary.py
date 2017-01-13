@@ -69,7 +69,6 @@ def main():
   df_names = dfs_dict.keys()
   for dataset in df_names:
     df_sizes[dataset] = len(dfs_dict[dataset])
-  print df_sizes
   logger.info(df_sizes)
 
   master_data_dictionary = configItems['master_data_dictionary']
@@ -82,6 +81,8 @@ def main():
   dataset_info = MasterDataDictionary.set_dataset_info(configItems, socrataLoadUtils, mm_dd_rows)
   dataset_info = scrud.postDataToSocrata(dataset_info, mm_dd_rows )
   print dataset_info
+
+
   logger.info(dataset_info)
   dsse = JobStatusEmailerComposer(configItems, logger)
   dsse.sendJobStatusEmail([dataset_info])
