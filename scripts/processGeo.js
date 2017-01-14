@@ -1,4 +1,4 @@
-2
+
 var request = require('request')
 var fs = require('fs')
 
@@ -6,6 +6,33 @@ var appDir = __dirname
 var appDirList = appDir.split('/')
 appDirList.pop(-1)
 appDir = appDirList.join('/')
+
+function mapColumnTypes (dataTypeName) {
+  var lookupDict = {
+    'text': 'text',
+    'number': 'numeric',
+    'calendar_date': 'timestamp',
+    'checkbox': 'boolean',
+    'money': 'numeric',
+    'location': 'geometry: point',
+    'date': 'timestamp',
+    'polygon': 'geometry: polygon',
+    'multipolygon': 'geometry: multipolygon',
+    'percent': 'numeric',
+    'url': 'text',
+    'line': 'geometry: line',
+    'document': 'blob',
+    'point': 'geometry point',
+    'html': 'text',
+    'drop_down_list': 'text',
+    'phone': 'text',
+    'photo': 'blob',
+    'multipoint': 'geometry: multipoint',
+    'multiline': 'geometry: multiline'
+  }
+  let renderDataType = lookupDict[dataTypeName]
+  return renderDataType
+}
 
 fs.readFile(appDir + '/output/tables.json', function (err, data) {
   if (err) {
@@ -47,7 +74,8 @@ fs.readFile(appDir + '/output/tables.json', function (err, data) {
             'department': row.department,
             'field_name': column.name,
             'field_type': column.dataTypeName,
-            'field_render_type': column.renderTypeName,
+            // 'field_render_type': column.renderTypeName,
+            'field_render_type': mapColumnTypes(column.renderTypeName),
             'field_description': column.description,
             'field_api_name': column.fieldName
           }

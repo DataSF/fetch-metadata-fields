@@ -19,15 +19,15 @@ function mapColumnTypes (dataTypeName) {
     'multipolygon': 'geometry: multipolygon',
     'percent': 'numeric',
     'url': 'text',
-    'line': 'Geometry: Line',
+    'line': 'geometry: line',
     'document': 'blob',
-    'point': 'Geometry Point',
+    'point': 'geometry: point',
     'html': 'text',
     'drop_down_list': 'text',
     'phone': 'text',
     'photo': 'blob',
-    'multipoint': 'Geometry: Multipoint',
-    'multiline': 'Geometry: Multiline'
+    'multipoint': 'geometry: multipoint',
+    'multiline': 'geometry: multiline'
   }
   let renderDataType = lookupDict[dataTypeName]
   return renderDataType
