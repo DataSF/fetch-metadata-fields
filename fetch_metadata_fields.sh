@@ -19,8 +19,8 @@ display_help() {
     echo
     echo "   -n, --npm path  -- path to npm- ie run: npm bin -g to find out"
     echo
-    echo " ***example usage: /fetch_metadata_fields.sh -d ~/Desktop/fetch-socrata-fields/configs/ -a fieldConfig_desktop.yaml -p /usr/local/bin/python -m fieldConfigMasterDD_desktop.yaml -n /usr/local/bin/npm "
-    echo " ***example usage: /fetch_metadata_fields.sh -d /home/ubuntu/fetch_metadata_fields/configs/ -a fieldConfig_server.yaml -p /home/ubuntu/miniconda2/bin/python -m fieldConfigMasterDD_server.yaml -n /usr/local/bin/npm"
+    echo " ***example usage: ./fetch_metadata_fields.sh -d ~/Desktop/fetch-socrata-fields/configs/ -a fieldConfig_desktop.yaml -p /usr/local/bin/python -m fieldConfigMasterDD_desktop.yaml -n /usr/local/bin/npm "
+    echo " ***example usage: ./fetch_metadata_fields.sh -d /home/ubuntu/fetch-metadata-fields/configs/ -a fieldConfig_server.yaml -p /home/ubuntu/miniconda2/bin/python -m fieldConfigMasterDD_server.yaml -n /usr/local/bin/npm"
     exit 1
 }
 # Initialize our own variables:
