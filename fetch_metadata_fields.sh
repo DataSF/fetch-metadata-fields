@@ -80,7 +80,7 @@ if [ -z "$npm_path" ]; then
 fi
 
 npm_path_to_package_json=$path_to_main_dir
-config1="config/"
+config1="configs/"
 config_dir=$path_to_main_dir$config1
 pydev="pydev/"
 pydev_dir=
