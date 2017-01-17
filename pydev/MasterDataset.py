@@ -53,10 +53,9 @@ class MasterDataDictionary:
         dataset_inventory = dfs_dict['dataset_inventory']
         coordinators = dfs_dict['cordinators']
         ##asset_inventory-> we only want rows that are datsets
-        asset_inventory = asset_inventory[ asset_inventory['type']== 'dataset']
+        asset_inventory = asset_inventory[ (asset_inventory['type']== 'dataset') | (asset_inventory['type']== 'esri map') | (asset_inventory['type']== 'gis map') ]
         #asset_inventory-> remove all the geo fields
         asset_fields = asset_fields[ (asset_fields['data_type'] ==  'tabular') | (asset_fields['data_type'] ==  'geo') ]
-
         #filter out records that don't have data_dictionaries + remove dupes
         data_dictionary_attachments = data_dictionary_attachments[data_dictionary_attachments['data_dictionary_attached'] ==  True]
         data_dictionary_attachments = data_dictionary_attachments.drop_duplicates('datasetid')
