@@ -22,7 +22,7 @@ function mapColumnTypes (dataTypeName) {
     'url': 'text',
     'line': 'geometry: line',
     'document': 'blob',
-    'point': 'geometry point',
+    'point': 'geometry: point',
     'html': 'text',
     'drop_down_list': 'text',
     'phone': 'text',
