@@ -54,7 +54,7 @@ class JobStatusEmailerComposer:
             return  "SUCCESS: " + self.job_name
 
     def makeJobStatusMsg( self,  dataset  ):
-        msg = dataset['jobStatus'] + ": " + dataset[self.datasetNameField] + "-> Total Rows:" + str(dataset[self.source_records_cnt]) + ", Rows Inserted: " + str(dataset[self.rowsInserted])  + ", Link: http://"  + self.dataset_base_url + "/" + dataset[self.fourXFour] + " \n\n\n "
+        msg = dataset['jobStatus'] + ": " + dataset[self.datasetNameField] + "-> Total Rows:" + str(dataset[self.source_records_cnt]) + ", Rows Inserted: " + str(dataset[self.rowsInserted])  + ", Link: http://"  + self.dataset_base_url + "/resource/" + dataset[self.fourXFour] + " \n\n\n "
         return msg
 
     def sendJobStatusEmail(self, finishedDataSets):
