@@ -97,6 +97,12 @@ class MasterDataDictionary:
         master_df['open_data_portal_url'] =  "http://"+ base_url+ '/resource/' + master_df['datasetid']
         return master_df
 
+    @staticmethod
+    def add_default_privateordeleted(master_df):
+        '''returns the url for a dataset'''
+        master_df['privateordeleted'] =  False
+        return master_df
+
 
     @staticmethod
     def calc_department_field(master_df, dfs_dict):
@@ -140,7 +146,6 @@ class MasterDataDictionary:
         df_global_defs = dfs_dict['global_field_defs']
         global_field_dict = PandasUtils.makeLookupDictOnTwo(df_global, 'global_string', 'field_name')
         global_def_dict = PandasUtils.makeLookupDictOnTwo(df_global_defs, 'global_field_name', 'global_field_definition')
-
         global_field_list = list(set( list( df_global['global_string'])))
         master_df['global_field'] = master_df.apply(lambda row: calc_global_field_row(row, global_field_list),axis=1)
         master_df['field_alias'] = master_df.apply(lambda row: calc_global_field_alias(row, global_field_dict, global_field_list),axis=1)
@@ -188,6 +193,7 @@ class MasterDataDictionary:
     def add_calculated_fields(master_df, base_url, dfs_dict):
         #fields_calculate= ['department', 'field_documented', 'global_field', 'do_not_process', 'field_definition', 'open_data_portal_url']
         master_df = MasterDataDictionary.add_url(master_df, base_url)
+        master_df = MasterDataDictionary.add_default_privateordeleted(master_df)
         master_df = MasterDataDictionary.set_blank_data_dictionary_attachment_flag(master_df)
         master_df =  MasterDataDictionary.calc_department_field(master_df,dfs_dict)
         master_df = MasterDataDictionary.calc_global_field(master_df,dfs_dict)
