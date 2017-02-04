@@ -1,4 +1,3 @@
-
 var request = require('request')
 var fs = require('fs')
 
@@ -57,34 +56,40 @@ fs.readFile(appDir + '/output/tables.json', function (err, data) {
         console.log(err)
       }
       var result = JSON.parse(body)
+      console.log(result)
       // /console.log('https://data.sfgov.org/api/views/' + row.childView + '.json')
-      var columns = result.columns.map(function (column, index, arr) {
+      if (result.columns) {
+        // console.log(result.columns)
+        var columns = result.columns.map(function (column, index, arr) {
+          // console.log(column)
         if (column.fieldName !== '') {
           return {
-            'data_type': 'geo',
-            'dataset_name': result.name,
-            'columnID': row.systemID + '_' + column.fieldName,
-            'internalColumnID': column.id,
-            'systemID': row.systemID,
-            'createdAt': result.createdAt,
-            'rowsUpdatedAt': result.rowsUpdatedAt,
-            'viewLastModified': result.viewLastModified,
-            'indexUpdatedAt': result.indexUpdatedAt,
-            'childView': row.childView,
-            'department': row.department,
-            'field_name': column.name,
-            'field_type': column.dataTypeName,
-            // 'field_render_type': column.renderTypeName,
-            'field_render_type': mapColumnTypes(column.renderTypeName),
-            'field_description': column.description,
-            'field_api_name': column.fieldName
-          }
+              'data_type': 'geo',
+              'dataset_name': result.name,
+              'columnID': row.systemID + '_' + column.fieldName,
+              'internalColumnID': column.id,
+              'systemID': row.systemID,
+              'createdAt': result.createdAt,
+              'rowsUpdatedAt': result.rowsUpdatedAt,
+              'viewLastModified': result.viewLastModified,
+              'indexUpdatedAt': result.indexUpdatedAt,
+              'childView': row.childView,
+              'department': row.department,
+              'field_name': column.name,
+              'field_type': column.dataTypeName,
+              // 'field_render_type': column.renderTypeName,
+              'field_render_type': mapColumnTypes(column.renderTypeName),
+              'field_description': column.description,
+              'field_api_name': column.fieldName
+            }
         } else {
           console.log('********')
           console.log(column)
-        }
-      })
-      geoFields = geoFields.concat(columns)
+          }
+        })
+      }
+
+      geoFields = result.columns ? geoFields.concat(columns) : geoFields
 
       if (iter === count) {
         cb(geoFields)
