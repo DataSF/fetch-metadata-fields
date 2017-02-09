@@ -6,7 +6,7 @@ import pandas as pd
 from pandas.io.json import json_normalize
 from PandasUtils import *
 from DictUtils import *
-
+import inflection
 
 
 class BuildDatasets:
@@ -139,11 +139,24 @@ class MasterDataDictionary:
             return ""
 
         def calc_global_field_def(row, global_def_dict, global_field_list):
-            if row['field_alias'] != '' and row['field_name'] in global_field_list:
-                return global_def_dict[row['field_alias']]
+            row_global_field_def = None
+            if ((row['field_alias'] != '') and (row['field_name'] in global_field_list)):
+                #below catches weird casing issues...
+                try:
+                    row_global_field_def = global_def_dict[row['field_alias']]
+                except Exception, e:
+                    try:
+                        row_global_field_def = global_def_dict[inflection.titleize(row['field_alias'])]
+                    except Exception, e:
+                        print "***something went wrong!***"
+                        print row['field_alias']
+                        print str(e)
+            return row_global_field_def
 
-        df_global = dfs_dict['global_fields']
         df_global_defs = dfs_dict['global_field_defs']
+        df_global_defs_list_names = list(df_global_defs['global_field_name'])
+        df_global = dfs_dict['global_fields']
+        df_global = df_global[df_global['field_name'].isin(df_global_defs_list_names)].reset_index()
         global_field_dict = PandasUtils.makeLookupDictOnTwo(df_global, 'global_string', 'field_name')
         global_def_dict = PandasUtils.makeLookupDictOnTwo(df_global_defs, 'global_field_name', 'global_field_definition')
         global_field_list = list(set( list( df_global['global_string'])))
