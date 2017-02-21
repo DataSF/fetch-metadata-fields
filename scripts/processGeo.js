@@ -56,7 +56,6 @@ fs.readFile(appDir + '/output/tables.json', function (err, data) {
         console.log(err)
       }
       var result = JSON.parse(body)
-      console.log(result)
       // /console.log('https://data.sfgov.org/api/views/' + row.childView + '.json')
       if (result.columns) {
         // console.log(result.columns)

@@ -49,7 +49,7 @@ def main():
   fieldConfigFile, config_inputdir = parse_opts()
   #fieldConfigFile = 'fieldConfigMasterDD.yaml'
   #config_inputdir = '/Users/j9/Desktop/fetch-socrata-fields/configs/'
-  cI =  ConfigItems(config_inputdir ,fieldConfigFile  )
+  cI =  ConfigUtils(config_inputdir ,fieldConfigFile  )
   configItems = cI.getConfigs()
   lg = pyLogger(configItems)
   logger = lg.setConfig()
@@ -74,7 +74,7 @@ def main():
   base_url = configItems['base_url']
 
 
-  mm_df = MasterDataDictionary.build_base(dfs_dict )
+  mm_df = MasterDataDictionary.build_base(dfs_dict)
   mm_df = MasterDataDictionary.add_calculated_fields(mm_df, base_url, dfs_dict)
   mm_dd_rows =  MasterDataDictionary.export_master_df_as_rows(mm_df)
   dataset_info = MasterDataDictionary.set_dataset_info(configItems, socrataLoadUtils, mm_dd_rows)

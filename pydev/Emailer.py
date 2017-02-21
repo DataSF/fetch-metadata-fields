@@ -28,7 +28,7 @@ class Emailer():
     def __init__(self, configItems):
         self._config_dir =  configItems['inputConfigDir']
         self._email_config_file = configItems['email_config_file']
-        self._emailConfigs = ConfigItems.getConfigsStatic(self._config_dir, self._email_config_file)
+        self._emailConfigs = ConfigUtils.setConfigs(self._config_dir, self._email_config_file)
         self._server = None
         self._server_port = None
         self._sender = None
@@ -79,8 +79,8 @@ class Emailer():
         #normal emails, no attachment
         server = smtplib.SMTP(self._server, self._server_port)
         ##comment these lines out when using the sfgov email server
-        server.starttls()
-        server.login(fromaddr, self._password)
+        #server.starttls()
+        #server.login(fromaddr, self._password)
         ######
         text = msg.as_string()
         server.sendmail(fromaddr, toaddr, text)

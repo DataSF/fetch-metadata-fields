@@ -5,7 +5,7 @@
 import yaml
 
 
-class ConfigItems:
+class ConfigUtils:
     def __init__(self, inputdir, fieldConfigFile):
         self.inputdir = inputdir
         self.fieldConfigFile = fieldConfigFile
@@ -19,15 +19,17 @@ class ConfigItems:
                 print(exc)
         return configItems
 
+
     @staticmethod
-    def getConfigsStatic(inputdir, fieldConfigFile):
-        configItems = 0
-        with open(inputdir + fieldConfigFile ,  'r') as stream:
+    def setConfigs(config_dir, config_file):
+        '''returns contents of yaml config file'''
+        with open( config_dir + config_file ,  'r') as stream:
             try:
-                configItems = yaml.load(stream)
+                config_items = yaml.load(stream)
+                return config_items
             except yaml.YAMLError as exc:
                 print(exc)
-        return configItems
+        return 0
 
 if __name__ == "__main__":
     main()

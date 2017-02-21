@@ -2,7 +2,8 @@
 #!/usr/bin/env python
 
 import pandas as pd
-
+from pandas.io.json import json_normalize
+import json
 
 class PandasUtils:
 
@@ -40,6 +41,14 @@ class PandasUtils:
   def makeLookupDictOnTwo(df, key_col, val_col):
       return dict(zip(df[key_col], df[val_col]))
 
+  @staticmethod
+  def makeDfFromJson(json_obj):
+    df = json_normalize(json_obj)
+    return df
+
+  @staticmethod
+  def fillNaWithBlank(df):
+    return df.fillna("")
 
 
 if __name__ == "__main__":

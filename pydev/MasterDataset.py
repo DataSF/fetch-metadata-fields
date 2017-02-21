@@ -7,6 +7,60 @@ from pandas.io.json import json_normalize
 from PandasUtils import *
 from DictUtils import *
 import inflection
+from Utils import *
+from ConfigUtils import *
+
+class NbeIds:
+    @staticmethod
+    def get_nbe_id_for_df(df, socrataQueriesObject, configItems):
+        def get_nbe_id(row,socrataQueriesObject):
+            qry = configItems['migration_qry_url'] + row['datasetid'] + '.json'
+            results = socrataQueriesObject.getQryGeneric(qry)
+            if 'nbeId' in results.keys():
+                print results['nbeId']
+                return results['nbeId']
+            else:
+                return ''
+        #print "*********"
+        df = df.reset_index()
+        #print len(df)
+        df['nbeid'] = df.apply(lambda row: get_nbe_id(row, socrataQueriesObject), axis=1)
+        df = df[['datasetid', 'nbeid']]
+        dfList =  PandasUtils.convertDfToDictrows(df)
+        wrote_json = WkbkJson.write_json_object(dfList, configItems['inputDataDir'], configItems['nbe_migration_fn'])
+        return wrote_json
+
+    @staticmethod
+    def get_assetfields_nbeid(asset_fields):
+        asset_fields = asset_fields[asset_fields['nbeid_geo'] != '']
+        asset_fields =  PandasUtils.groupbyCountStar(asset_fields, ['datasetid', 'nbeid_geo'])
+        asset_fields = asset_fields[['datasetid', 'nbeid_geo']]
+        return asset_fields
+
+
+    @staticmethod
+    def shift_nbeid_geo_to_nbeid(row):
+        if row['nbeid_geo'] != '':
+            return row['nbeid_geo']
+        if row['nbeid'] == '':
+            return row['datasetid']
+        return row['nbeid']
+
+    @staticmethod
+    def get_nbeid_final_df(asset_fields, nbe_asset_inventory_json, master_dd_json_obj):
+        asset_fields_nbeid = NbeIds.get_assetfields_nbeid(asset_fields)
+        asset_inventory = PandasUtils.makeDfFromJson(nbe_asset_inventory_json)
+        master_df = PandasUtils.makeDfFromJson(master_dd_json_obj)
+        nbeid_df_list = pd.merge( asset_inventory, asset_fields_nbeid, on='datasetid', how='left')
+        nbeid_df_list = PandasUtils.fillNaWithBlank(nbeid_df_list)
+        nbeid_df_list['nbeid'] = nbeid_df_list.apply(lambda row: NbeIds.shift_nbeid_geo_to_nbeid(row ),axis=1)
+        master_df = master_df[master_df['privateordeleted'] == False].reset_index()
+        df_master_nbeid = pd.merge(master_df, nbeid_df_list, on='datasetid', how='left')
+        df_master_nbeid = df_master_nbeid [['columnid', 'nbeid']]
+        df_master_nbeid = PandasUtils.fillNaWithBlank(df_master_nbeid)
+        #print df_master_nbeid [df_master_nbeid['nbeid'] == '']
+        return df_master_nbeid
+
 
 
 class BuildDatasets:
@@ -20,8 +74,10 @@ class BuildDatasets:
 
     @staticmethod
     def makeDf(json_obj):
-        df = json_normalize(json_obj)
-        df = df.fillna('')
+        df = None
+        if(json_obj):
+            df = json_normalize(json_obj)
+            df = df.fillna('')
         return df
 
     @staticmethod
@@ -56,6 +112,7 @@ class MasterDataDictionary:
         asset_inventory = asset_inventory[ (asset_inventory['type']== 'dataset') | (asset_inventory['type']== 'esri map') | (asset_inventory['type']== 'gis map') ]
         #asset_inventory-> remove all the geo fields
         asset_fields = asset_fields[ (asset_fields['data_type'] ==  'tabular') | (asset_fields['data_type'] ==  'geo') ]
+
         #filter out records that don't have data_dictionaries + remove dupes
         data_dictionary_attachments = data_dictionary_attachments[data_dictionary_attachments['data_dictionary_attached'] ==  True]
         data_dictionary_attachments = data_dictionary_attachments.drop_duplicates('datasetid')
@@ -72,12 +129,13 @@ class MasterDataDictionary:
     @staticmethod
     def build_base(dfs_dict):
         '''builds up all the non-transformed fields'''
-        fields_to_include= ['columnid', 'datasetid', 'dataset_name', 'inventoryid', 'field_name', 'socrata_field_type', 'field_type', 'api_key', 'data_steward', 'data_steward_name', 'department_from_inventory', 'department_from_catalog', 'data_coordinator', 'data_dictionary_attached', 'attachment_url', 'field_definition']
+        fields_to_include= ['columnid', 'datasetid', 'dataset_name', 'inventoryid', 'field_name', 'socrata_field_type', 'field_type', 'api_key', 'data_steward', 'data_steward_name', 'department_from_inventory', 'department_from_catalog', 'data_coordinator', 'data_dictionary_attached', 'attachment_url', 'field_definition', 'nbeid']
         asset_fields, asset_inventory, data_dictionary_attachments, dataset_inventory, coordinators = MasterDataDictionary.filter_base_datasets(dfs_dict)
         dataset_inventory =  MasterDataDictionary.buildInventoryInfo(dataset_inventory,coordinators)
         #join everything together to make the master dataset
         master_df = pd.merge(asset_fields, asset_inventory, on='datasetid', how='left').merge(data_dictionary_attachments, on='datasetid', how='left').merge(dataset_inventory, on='datasetid', how='left')
         master_df = master_df.fillna('')
+        print master_df.head(10)
         master_df = master_df[fields_to_include ]
         return master_df
 
@@ -201,6 +259,7 @@ class MasterDataDictionary:
         stewards_exclude =list(df_data_dictionary_do_not_process['stewards'])
         master_df['do_not_process'] =  master_df.apply(lambda row: calc_do_not_process_row(row, depts_exclude, stewards_exclude),axis=1)
         return master_df
+
 
     @staticmethod
     def add_calculated_fields(master_df, base_url, dfs_dict):

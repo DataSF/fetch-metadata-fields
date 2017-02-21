@@ -213,6 +213,11 @@ class SocrataQueries:
          r = requests.get( qry , auth=( self.username, base64.b64decode(self.passwd)))
          return r.json()
 
+    def getQryGeneric(self, qry):
+        '''returns results for a genereic qry string'''
+        r = requests.get( qry , auth=( self.username, base64.b64decode(self.passwd)))
+        return r.json()
+
     def pageThroughResultsSelect(self, fbf, qry_cols):
         row_cnt = self.getRowCnt(fbf)
         returned_records = 0
