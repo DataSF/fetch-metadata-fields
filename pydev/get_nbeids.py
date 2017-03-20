@@ -1,4 +1,5 @@
 
+def main():
 # coding: utf-8
 #!/usr/bin/env python
 
@@ -46,7 +47,6 @@ def parse_opts():
   return fieldConfigFile, config_inputdir
 
 
-def main():
   fieldConfigFile, config_inputdir = parse_opts()
   cI =  ConfigUtils(config_inputdir ,fieldConfigFile  )
   configItems = cI.getConfigs()
@@ -85,6 +85,7 @@ def main():
     dataset_info = {'Socrata Dataset Name': "NbeIds", 'SrcRecordsCnt':0, 'DatasetRecordsCnt':0, 'fourXFour': "Job Failed"}
     dataset_info['isLoaded'] = 'failed'
     dsse.sendJobStatusEmail([dataset_info])
+
 
 
 if __name__ == "__main__":
