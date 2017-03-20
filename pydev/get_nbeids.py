@@ -1,5 +1,3 @@
-
-def main():
 # coding: utf-8
 #!/usr/bin/env python
 
@@ -46,7 +44,7 @@ def parse_opts():
   config_inputdir = options.configDir
   return fieldConfigFile, config_inputdir
 
-
+def main():
   fieldConfigFile, config_inputdir = parse_opts()
   cI =  ConfigUtils(config_inputdir ,fieldConfigFile  )
   configItems = cI.getConfigs()
