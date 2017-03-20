@@ -129,7 +129,7 @@ class MasterDataDictionary:
     @staticmethod
     def build_base(dfs_dict):
         '''builds up all the non-transformed fields'''
-        fields_to_include= ['columnid', 'datasetid', 'dataset_name', 'inventoryid', 'field_name', 'socrata_field_type', 'field_type', 'api_key', 'data_steward', 'data_steward_name', 'department_from_inventory', 'department_from_catalog', 'data_coordinator', 'data_dictionary_attached', 'attachment_url', 'field_definition',  'update_frequency']
+        fields_to_include= ['columnid', 'datasetid', 'dataset_name', 'inventoryid', 'field_name', 'socrata_field_type', 'field_type', 'api_key', 'data_steward', 'data_steward_name', 'department_from_inventory', 'department_from_catalog', 'data_coordinator', 'data_dictionary_attached', 'attachment_url', 'field_definition',  'last_updt_dt_data']
         asset_fields, asset_inventory, data_dictionary_attachments, dataset_inventory, coordinators = MasterDataDictionary.filter_base_datasets(dfs_dict)
         dataset_inventory =  MasterDataDictionary.buildInventoryInfo(dataset_inventory,coordinators)
         #join everything together to make the master dataset
