@@ -64,7 +64,6 @@ def main():
   master_dd_json = metadatasets.get_master_metadataset_as_json()
   #print master_dd_json
   #master_dd_json = True
-
   asset_fields, asset_inventory, data_dictionary_attachments, dataset_inventory, coordinators = MasterDataDictionary.filter_base_datasets(dfs_dict)
   asset_inventory_json = NbeIds.get_nbe_id_for_df(asset_inventory, sqry, configItems )
   #asset_inventory_json = True
