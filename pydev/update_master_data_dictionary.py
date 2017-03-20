@@ -47,8 +47,6 @@ def parse_opts():
 
 def main():
   fieldConfigFile, config_inputdir = parse_opts()
-  #fieldConfigFile = 'fieldConfigMasterDD.yaml'
-  #config_inputdir = '/Users/j9/Desktop/fetch-socrata-fields/configs/'
   cI =  ConfigUtils(config_inputdir ,fieldConfigFile  )
   configItems = cI.getConfigs()
   lg = pyLogger(configItems)

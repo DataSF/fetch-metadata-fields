@@ -14,7 +14,8 @@ node_modules/
 logs/*
 output/*
 configs/socrata_config.yaml
-configs/email_config.yaml
+configs/email_config_server.yaml
+configs/email_config_gmail.yaml
 *ipynb
 # Packages #
 ############
