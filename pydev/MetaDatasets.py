@@ -54,7 +54,6 @@ class MetaDatasets:
   def get_metadata_df(pickle_data_dir, json_file):
     json_obj = WkbkJson.loadJsonFile(pickle_data_dir, json_file)
     df = PandasUtils.makeDfFromJson(json_obj)
-    df
     return df
 
 

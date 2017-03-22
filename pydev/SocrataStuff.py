@@ -223,10 +223,11 @@ class SocrataQueries:
         returned_records = 0
         offset = 0
         all_results = []
-        while returned_records < row_cnt:
+        while offset < row_cnt:
             limit_offset = "&$limit=1000&$offset="+ str(offset)
             qry = '?$select='+qry_cols+ limit_offset
             try:
+                print qry
                 results = self.getQry(fbf, qry)
             except Exception, e:
                 print str(e)
@@ -240,7 +241,7 @@ class SocrataQueries:
                 print str(e)
                 break
             offset = offset + 1000
-            returned_records = len(results)+ returned_records
+            #returned_records = len(results)+ returned_records
         return all_results
 
 if __name__ == "__main__":
