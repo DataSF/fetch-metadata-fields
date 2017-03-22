@@ -220,6 +220,10 @@ class SocrataQueries:
 
     def pageThroughResultsSelect(self, fbf, qry_cols):
         row_cnt = self.getRowCnt(fbf)
+        print "**********"
+        print fbf
+        print row_cnt
+        print "*******"
         returned_records = 0
         offset = 0
         all_results = []
