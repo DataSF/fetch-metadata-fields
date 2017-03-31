@@ -129,7 +129,7 @@ class MasterDataDictionary:
     @staticmethod
     def build_base(dfs_dict):
         '''builds up all the non-transformed fields'''
-        fields_to_include= ['columnid', 'datasetid', 'dataset_name', 'inventoryid', 'field_name', 'socrata_field_type', 'field_type', 'api_key', 'data_steward', 'data_steward_name', 'department_from_inventory', 'department_from_catalog', 'data_coordinator', 'data_dictionary_attached', 'attachment_url', 'field_definition',  'last_updt_dt_data', 'created_date']
+        fields_to_include= ['last_updt_dt_data', 'created_date', 'columnid', 'datasetid', 'dataset_name', 'inventoryid', 'field_name', 'socrata_field_type', 'field_type', 'api_key', 'data_steward', 'data_steward_name', 'department_from_inventory', 'department_from_catalog', 'data_coordinator', 'data_dictionary_attached', 'attachment_url', 'field_definition'  ]
         asset_fields, asset_inventory, data_dictionary_attachments, dataset_inventory, coordinators = MasterDataDictionary.filter_base_datasets(dfs_dict)
         dataset_inventory =  MasterDataDictionary.buildInventoryInfo(dataset_inventory,coordinators)
         #join everything together to make the master dataset
@@ -258,7 +258,6 @@ class MasterDataDictionary:
         stewards_exclude =list(df_data_dictionary_do_not_process['stewards'])
         master_df['do_not_process'] =  master_df.apply(lambda row: calc_do_not_process_row(row, depts_exclude, stewards_exclude),axis=1)
         return master_df
-
 
     @staticmethod
     def add_calculated_fields(master_df, base_url, dfs_dict):
