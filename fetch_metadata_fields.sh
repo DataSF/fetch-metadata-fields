@@ -83,12 +83,13 @@ npm_path_to_package_json=$path_to_main_dir
 config1="configs/"
 config_dir=$path_to_main_dir$config1
 pydev="pydev/"
-pydev_dir=
 update_mm_fields="update_metadata_fields.py"
 pydev_mm_fields=$path_to_main_dir$pydev$update_mm_fields
 update_master_dd="update_master_data_dictionary.py"
 pydev_update_master_dd=$path_to_main_dir$pydev$update_master_dd
-
+get_nbeids="get_nbeids.py"
+pydev_get_nbeids=$path_to_main_dir$pydev$get_nbeids
+nbeids_config="fieldConfig_nbeid_server.yaml"
 
 #grab the data
 $npm_path run --prefix $npm_path_to_package_json output_csvs
@@ -96,3 +97,5 @@ $npm_path run --prefix $npm_path_to_package_json output_csvs
 $python_path $pydev_mm_fields -c $config_fn_asset_fields -d $config_dir
 #update the master datadictionary
 $python_path $pydev_update_master_dd -c $config_fn_master_dd -d $config_dir
+#update the nbeids in the master dd
+$python_path $pydev_get_nbeids -c $nbeids_config -d $config_dir
