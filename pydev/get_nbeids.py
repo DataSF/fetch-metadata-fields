@@ -11,6 +11,7 @@ from JobStatusEmailerComposer import *
 from PyLogger import *
 from MetaDatasets import *
 
+
 def parse_opts():
   helpmsgConfigFile = 'Use the -c to add a config yaml file. EX: fieldConfig.yaml'
   parser = OptionParser(usage='usage: %prog [options] ')
@@ -60,21 +61,18 @@ def main():
   tables = configItems['tables']
   metadatasets = MetaDatasets(configItems, sqry, logger)
   dfs_dict = BuildDatasets.getDatasets(tables, sqry)
-  job_success = False
-  master_dd_json = metadatasets.get_master_metadataset_as_json()
-  print master_dd_json
-  #master_dd_json = True
-
+  df_master_dd = []
+  asset_fields = []
   asset_fields, asset_inventory, data_dictionary_attachments, dataset_inventory, coordinators = MasterDataDictionary.filter_base_datasets(dfs_dict)
-  asset_inventory_json = NbeIds.get_nbe_id_for_df(asset_inventory, sqry, configItems )
-  #asset_inventory_json = True
-  if asset_inventory_json and master_dd_json:
-    nbe_asset_inventory_json = WkbkJson.loadJsonFile(configItems['inputDataDir'], configItems['nbe_migration_fn'])
-    master_dd_json_obj = WkbkJson.loadJsonFile(configItems['inputDataDir'], configItems['master_dd_json_fn'])
-    nbeid_list = NbeIds.get_nbeid_final_df(asset_fields, nbe_asset_inventory_json, master_dd_json_obj)
-    nbeid_list_rows =  PandasUtils.convertDfToDictrows(nbeid_list)
-    dataset_info = MasterDataDictionary.set_dataset_info(configItems, socrataLoadUtils, nbeid_list_rows)
-    dataset_info = scrud.postDataToSocrata(dataset_info, nbeid_list_rows )
+  master_dd_json = metadatasets.get_master_metadataset_as_json()
+  #master_dd_json = True
+  master_dd_json_obj = WkbkJson.loadJsonFile(configItems['inputDataDir'], configItems['master_dd_json_fn'])
+  df_master_dd = PandasUtils.makeDfFromJson(master_dd_json_obj)
+  job_success = False
+  if(len(df_master_dd) > 0 and len(asset_fields) > 0) :
+    nbeid_list = NbeIds.get_nbeids_final(configItems, sqry, df_master_dd, asset_fields)
+    dataset_info = MasterDataDictionary.set_dataset_info(configItems, socrataLoadUtils, nbeid_list)
+    dataset_info = scrud.postDataToSocrata(dataset_info, nbeid_list )
     print dataset_info
     dsse = JobStatusEmailerComposer(configItems, logger)
     dsse.sendJobStatusEmail([dataset_info])

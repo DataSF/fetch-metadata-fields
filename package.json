@@ -1,7 +1,7 @@
 {
   "name": "dataset-search-index",
   "version": "1.0.0",
-  "description": "Scripts to create data for indexing by algolia",
+  "description": "Scripts to grab datasf metadata from nested json object at http://data.sfgov.org/api/search/views.json",
   "main": "index.js",
   "config": { "path": "/home/ubuntu/metadata-mgmnt-tool" },
   "scripts": {

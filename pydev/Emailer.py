@@ -81,7 +81,7 @@ class Emailer():
         ##comment these lines out when using the sfgov email server
         #server.starttls()
         #server.login(fromaddr, self._password)
-        ######
+        #######
         text = msg.as_string()
         server.sendmail(fromaddr, toaddr, text)
         server.quit()

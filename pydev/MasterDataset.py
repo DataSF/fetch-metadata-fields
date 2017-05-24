@@ -13,23 +13,17 @@ from ConfigUtils import *
 
 class NbeIds:
     @staticmethod
-    def get_nbe_id_for_df(df, socrataQueriesObject, configItems):
-        def get_nbe_id(row,socrataQueriesObject):
-            qry = configItems['migration_qry_url'] + row['datasetid'] + '.json'
-            results = socrataQueriesObject.getQryGeneric(qry)
-            if 'nbeId' in results.keys():
-                print results['nbeId']
-                return results['nbeId']
-            else:
-                return ''
-        #print "*********"
-        df = df.reset_index()
-        #print len(df)
-        df['nbeid'] = df.apply(lambda row: get_nbe_id(row, socrataQueriesObject), axis=1)
-        df = df[['datasetid', 'nbeid']]
-        dfList =  PandasUtils.convertDfToDictrows(df)
-        wrote_json = WkbkJson.write_json_object(dfList, configItems['inputDataDir'], configItems['nbe_migration_fn'])
-        return wrote_json
+    def get_nbeids(df, socrataQueriesObject, configItems):
+      def get_nbe_id(row,socrataQueriesObject):
+          qry = configItems['migration_qry_url'] + row['datasetid'] + '.json'
+          results = socrataQueriesObject.getQryGeneric(qry)
+          if 'nbeId' in results.keys():
+              print results['nbeId']
+              return results['nbeId']
+          else:
+              return ''
+      df['nbeid'] = df.apply(lambda row: get_nbe_id(row, socrataQueriesObject), axis=1)
+      return df
 
     @staticmethod
     def get_assetfields_nbeid(asset_fields):
@@ -48,20 +42,21 @@ class NbeIds:
         return row['nbeid']
 
     @staticmethod
-    def get_nbeid_final_df(asset_fields, nbe_asset_inventory_json, master_dd_json_obj):
-        asset_fields_nbeid = NbeIds.get_assetfields_nbeid(asset_fields)
-        asset_inventory = PandasUtils.makeDfFromJson(nbe_asset_inventory_json)
-        master_df = PandasUtils.makeDfFromJson(master_dd_json_obj)
-        nbeid_df_list = pd.merge( asset_inventory, asset_fields_nbeid, on='datasetid', how='left')
-        nbeid_df_list = PandasUtils.fillNaWithBlank(nbeid_df_list)
-        nbeid_df_list['nbeid'] = nbeid_df_list.apply(lambda row: NbeIds.shift_nbeid_geo_to_nbeid(row ),axis=1)
-        master_df = master_df[master_df['privateordeleted'] == False].reset_index()
-        df_master_nbeid = pd.merge(master_df, nbeid_df_list, on='datasetid', how='left')
-        df_master_nbeid = df_master_nbeid [['columnid', 'nbeid']]
-        df_master_nbeid = PandasUtils.fillNaWithBlank(df_master_nbeid)
-        return df_master_nbeid
-
-
+    def get_nbeids_final(configItems, socrataQueriesObject, df_master_dd, asset_fields):
+      df_datasetids =  PandasUtils.groupbyCountStar(df_master_dd, ['datasetid'])
+      #df_datasetids = df_datasetids.head(10)
+      df_datasetids = NbeIds.get_nbeids(df_datasetids, socrataQueriesObject, configItems)
+      asset_fields_nbeidgeo = NbeIds.get_assetfields_nbeid(asset_fields)
+      nbeid_df = pd.merge( df_datasetids, asset_fields_nbeidgeo, on='datasetid', how='left')
+      #nbeid_df =  nbeid_df.head(10)
+      nbeid_df = PandasUtils.fillNaWithBlank(nbeid_df)
+      nbeid_df['nbeid'] = nbeid_df.apply(lambda row: NbeIds.shift_nbeid_geo_to_nbeid(row ),axis=1)
+      nbeid_df = nbeid_df[['datasetid', 'nbeid']]
+      df_master_dd = pd.merge(df_master_dd, nbeid_df, on='datasetid', how='left')
+      df_master_dd = PandasUtils.fillNaWithBlank(df_master_dd)
+      df_master_dd =  df_master_dd[df_master_dd['nbeid'] != '']
+      df_master_dd = df_master_dd [['columnid', 'nbeid']]
+      return PandasUtils.convertDfToDictrows(df_master_dd)
 
 class BuildDatasets:
     '''class to build up the base of the master dataset'''
