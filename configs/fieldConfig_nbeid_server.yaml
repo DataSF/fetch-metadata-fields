@@ -58,9 +58,6 @@ tables:
   global_field_defs:
     fbf: iwpj-u2p9
     field_list: ['global_field_name', 'global_field_definition']
-  nbe_lookup:
-    fbf: 52ti-ve8d
-    field_list: ['datasetid', 'nbeid']
 
 master_data_dictionary:
     fourXFour: 8zp7-ik63
