@@ -61,12 +61,24 @@ tables:
 
 master_data_dictionary:
     fourXFour: 8zp7-ik63
-    #fourXFour: asfx-iyhm
     Socrata Dataset Name: Master Data Dictionary
     row_id: columnid
 
-nbe_migration_fn: nbeid_migration.json
+public_data_dictionary:
+  fourXFour: wn8x-uk7i
+  Socrata Dataset Name: Public Master Data Dictionary
+  row_id: columnid
 
+
+field_profiles:
+  fourXFour: ekxv-883u
+  Socrata Dataset Name: Field Profiles
+  row_id: columnid
+
+
+
+  
+nbe_migration_fn: nbeid_migration.json
 
 migration_qry_url: https://data.sfgov.org/api/migrations/
 

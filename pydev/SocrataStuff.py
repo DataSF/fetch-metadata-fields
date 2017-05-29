@@ -155,6 +155,17 @@ class SocrataCRUD:
             self._logger.info(str(e))
         return row_count
 
+    def deleteRows(self, fbf, rowsToDelete):
+      '''deletes a list of rows for a given 4x4; where row id is the uniq id for the row'''
+      rowsDeleted = 0
+      for rowId in rowsToDelete:
+        try:
+          result = self.client.delete(fbf, row_id=rowId)
+          rowsDeleted += 1
+        except Exception, e:
+          pass
+      return rowsDeleted
+
 
 class SocrataLoadUtils:
     def __init__(self, configItems, clientItems=None):

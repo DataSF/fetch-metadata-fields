@@ -10,7 +10,7 @@ from MasterDataset import *
 from JobStatusEmailerComposer import *
 from PyLogger import *
 from MetaDatasets import *
-
+from  MetadataMaintenance import *
 
 def parse_opts():
   helpmsgConfigFile = 'Use the -c to add a config yaml file. EX: fieldConfig.yaml'
@@ -59,11 +59,11 @@ def main():
   scrud = SocrataCRUD(client, clientItems, configItems, logger)
   sqry = SocrataQueries(clientItems, configItems, logger)
   tables = configItems['tables']
+  tables =  {'asset_fields': tables['asset_fields']}
   metadatasets = MetaDatasets(configItems, sqry, logger)
   dfs_dict = BuildDatasets.getDatasets(tables, sqry)
+  asset_fields = dfs_dict['asset_fields']
   df_master_dd = []
-  asset_fields = []
-  asset_fields, asset_inventory, data_dictionary_attachments, dataset_inventory, coordinators = MasterDataDictionary.filter_base_datasets(dfs_dict)
   master_dd_json = metadatasets.get_master_metadataset_as_json()
   #master_dd_json = True
   master_dd_json_obj = WkbkJson.loadJsonFile(configItems['inputDataDir'], configItems['master_dd_json_fn'])
@@ -81,8 +81,8 @@ def main():
     dataset_info = {'Socrata Dataset Name': "NbeIds", 'SrcRecordsCnt':0, 'DatasetRecordsCnt':0, 'fourXFour': "Job Failed"}
     dataset_info['isLoaded'] = 'failed'
     dsse.sendJobStatusEmail([dataset_info])
-
-
+  updateMasterDDs = MetadataMaintenance.deleteStaleMasterDDRows(configItems, scrud, df_master_dd, asset_fields)
+  print updateMasterDDs
 
 if __name__ == "__main__":
     main()
