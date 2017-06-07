@@ -224,8 +224,6 @@ class MasterDataDictionary:
         def calc_field_documented_row(row):
             if row['global_field']:
                 return True
-            elif row['data_dictionary_attached']:
-                return True
             elif row['field_definition'] != '':
                 return True
             return False
