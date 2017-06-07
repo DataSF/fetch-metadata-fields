@@ -93,6 +93,23 @@ class BuildDatasets:
 
 
 class MasterDataDictionary:
+  
+    @staticmethod
+    def getXlxsDataDicts(data_dictionary_attachments):
+      #print data_dictionary_attachments.columns
+      df_dupes = PandasUtils.groupbyCountStar(data_dictionary_attachments, 'datasetid')
+      df_dupes =  df_dupes[df_dupes['count'] > 1]
+      df_dupe_ids = list(df_dupes['datasetid'])
+      df_attachments_uniq =  data_dictionary_attachments[~data_dictionary_attachments['datasetid'].isin(df_dupe_ids)].reset_index(drop=True)
+      df_attachments_uniq_list = list(df_attachments_uniq['datasetid'])
+      df_dataset_dupe =  data_dictionary_attachments[~data_dictionary_attachments['datasetid'].isin(df_attachments_uniq_list)].reset_index(drop=True)
+      df_dataset_dupe['isxls'] = df_dataset_dupe['attachment_url'].str.contains('xlsx')
+      df_dataset_dupe = df_dataset_dupe[df_dataset_dupe['isxls'] == True].reset_index(drop=True)
+      df_xls_list = list(df_dataset_dupe['datasetid'])
+      df_not_in_both = data_dictionary_attachments[(~data_dictionary_attachments['datasetid'].isin(df_attachments_uniq_list)) & (~data_dictionary_attachments['datasetid'].isin(df_xls_list))]
+      df_dataset_dupe = df_dataset_dupe[['attachment_url', 'data_dictionary_attached', 'datasetid']] 
+      df_final_attachment =  pd.concat([df_attachments_uniq, df_dataset_dupe])
+      return df_final_attachment
 
     @staticmethod
     def filter_base_datasets(dfs_dict):
@@ -110,7 +127,8 @@ class MasterDataDictionary:
 
         #filter out records that don't have data_dictionaries + remove dupes
         data_dictionary_attachments = data_dictionary_attachments[data_dictionary_attachments['data_dictionary_attached'] ==  True]
-        data_dictionary_attachments = data_dictionary_attachments.drop_duplicates('datasetid')
+        data_dictionary_attachments = MasterDataDictionary.getXlxsDataDicts(data_dictionary_attachments)
+
         #grab the primary data coordinator
         coordinators = coordinators[coordinators['primary'] == 'Yes']
         return asset_fields, asset_inventory, data_dictionary_attachments, dataset_inventory, coordinators
