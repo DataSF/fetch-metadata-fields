@@ -22,7 +22,7 @@ def parse_opts():
                       help=helpmsgConfigFile ,)
 
   helpmsgConfigDir = 'Use the -d to add directory path for the config files. EX: /home/ubuntu/configs'
-  parser.add_option('-d', '--configdir',
+  parser.add_option ('-d', '--configdir',
                       action='store',
                       dest='configDir',
                       default=None,
@@ -31,7 +31,7 @@ def parse_opts():
   (options, args) = parser.parse_args()
 
   if  options.configFn is None:
-    print "ERROR: You must specify a config yaml file!"
+    print 'ERROR: You must specify a config yaml file! '
     print helpmsgConfigFile
     exit(1)
   elif options.configDir is None:
@@ -83,6 +83,14 @@ def main():
     dsse.sendJobStatusEmail([dataset_info])
   updateMasterDDs = MetadataMaintenance.deleteStaleMasterDDRows(configItems, scrud, df_master_dd, asset_fields)
   print updateMasterDDs
+  df_master_dd_documented =  MetaDatasets.update_field_documented(df_master_dd)
+  df_master_dd_documented = df_master_dd_documented[['columnid', 'field_documented']].reset_index()
+  document_dictList = PandasUtils.convertDfToDictrows(df_master_dd_documented)
+  dataset_info = MasterDataDictionary.set_dataset_info(configItems, socrataLoadUtils, document_dictList)
+  dataset_info = scrud.postDataToSocrata(dataset_info, document_dictList )
+  print dataset_info
+
+
 
 if __name__ == "__main__":
     main()

@@ -14,8 +14,9 @@ class pyLogger:
 
     def setConfig(self):
         #open a file to clear log
-        #fo = open(self.logfile_fullpath, "w")
-        #fo.close
+        #print self.logfile_fullpath
+        fo = open(self.logfile_fullpath, "w")
+        fo.close
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         logger = logging.getLogger(self.app_name)
         logger.setLevel(logging.INFO)

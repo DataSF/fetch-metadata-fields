@@ -1,8 +1,8 @@
-inputDataDir: /Users/j9/Desktop/fetch-socrata-fields/output/
-inputConfigDir: /Users/j9/Desktop/fetch-socrata-fields/configs/
+inputDataDir: /Users/j9/Desktop/fetch-metadata-fields/output/
+inputConfigDir: /Users/j9/Desktop/fetch-metadata-fields/configs/
 
 socrata_client_config_fname: socrata_config.yaml
-log_dir: /Users/j9/Desktop/fetch-socrata-fields/logs/
+log_dir: /Users/j9/Desktop/fetch-metadata-fields/logs/
 exception_logfile: master_dd_exception.log
 app_name: master_data_dictionary
 src_records_cnt_field: SrcRecordsCnt
@@ -15,7 +15,7 @@ dataset_name_field: Socrata Dataset Name
 dataset_src_dir_field:  Dataset_Source_Dir
 dataset_src_fn_field: Dataset Source Filename
 base_url: data.sfgov.org
-email_config_file: email_config.yaml
+email_config_file: email_config_gmail.yaml
 tables:
   global_fields:
     fbf: ctmu-r9d9

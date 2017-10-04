@@ -1,0 +1,12 @@
+server_addr: smtp.gmail.com
+server_port: 587
+email_addr: your email addresss
+email_pass: your email password
+recipients: your recipients
+sender_addr: your sender addr
+sender_password: your sender_password
+bcc: bcc email address
+subject_line: abc
+etl_sender_addr: abc
+etl_recipients:  abc
+msgBody:

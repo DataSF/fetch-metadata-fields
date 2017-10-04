@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Scripts to grab datasf metadata from nested json object at http://data.sfgov.org/api/search/views.json",
   "main": "index.js",
-  "config": { "path": "/home/ubuntu/metadata-mgmnt-tool" },
+  "config": {
+    "path": "/home/ubuntu/metadata-mgmnt-tool"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "output_csvs" : "node ./scripts/processTables && node ./scripts/processGeo && node ./scripts/combineOutput && node ./scripts/getAttachmentList && node ./scripts/tocsv"
+    "output_csvs": "node ./scripts/processTables && node ./scripts/processGeo && node ./scripts/combineOutput && node ./scripts/getAttachmentList && node ./scripts/tocsv"
   },
   "author": "",
   "license": "MIT",

@@ -1,0 +1,7 @@
+app_token: your socrata app app_token
+url: data.sfgov.org
+username: your socrata id
+password: your password
+timeout: 35
+#password_decoded: tCGK3FjFKmhO
+

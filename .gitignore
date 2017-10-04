@@ -32,7 +32,7 @@ configs/email_config_gmail.yaml
 *.ipynb_
 *.pyc
 
-
+package-lock.json
 # Logs and databases #
 ######################
 *.log
